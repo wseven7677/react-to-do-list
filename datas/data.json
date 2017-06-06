@@ -1,0 +1,19 @@
+[{
+	"content": "做一份模拟试卷。",
+	"state": false
+},{
+	"content": "复习错题本。",
+	"state": false
+},{
+	"content": "英语单词。",
+	"state": false
+},{
+	"content": "古诗复习。",
+	"state": false
+},{
+	"content": "休息半小时。",
+	"state": true
+},{
+	"content": "准备工具。",
+	"state": false
+}]
