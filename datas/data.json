@@ -1,19 +1,13 @@
 [{
-	"content": "做一份模拟试卷。",
+	"content": "这是一条任务。",
 	"state": false
 },{
-	"content": "复习错题本。",
+	"content": "在文本框中输入任务按回车提交。",
 	"state": false
 },{
-	"content": "英语单词。",
+	"content": "点击左侧checkbox完成任务。",
 	"state": false
 },{
-	"content": "古诗复习。",
-	"state": false
-},{
-	"content": "休息半小时。",
+	"content": "已完成的任务。",
 	"state": true
-},{
-	"content": "准备工具。",
-	"state": false
 }]

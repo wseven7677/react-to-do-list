@@ -5,6 +5,8 @@ require(["scripts/dataImport"],function(dataImport){
     var existTasks = dataImport("data"),
         theInputs = [];// 存放items的数组，全局。
 
+
+// 回车键提交任务：
     document.addEventListener("keypress",function(event){
         if(event.keyCode == 13){
             document.getElementById("subBtn").click();
@@ -12,7 +14,7 @@ require(["scripts/dataImport"],function(dataImport){
         }
     });
 
-// --------------------------------------------------------------
+// --------------------react start------------------------------------
 // 每一个条目 【组件】
     var TaskItem = React.createClass({
         getInitialState: function(){
@@ -117,6 +119,6 @@ require(["scripts/dataImport"],function(dataImport){
         <TaskInCtrl />,
         document.getElementById("outter")
     );
-// ------------------------------------------------------------------
+// ------------------------react end------------------------------------
 
 });
