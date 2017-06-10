@@ -73,11 +73,27 @@ require(["scripts/dataImport"],function(dataImport){
             this.saveStateToStorage();
         },
 
+        deleteClick: function(){
+            var exTasks = JSON.parse(localStorage.getItem("todoTasks")),
+                that = this,
+                tobeDelTaskIndex;
+            exTasks.forEach(function(value,index){
+                if(value.content == that.props.inputText){
+                    tobeDelTaskIndex = index;
+                }
+            });
+            exTasks.splice(tobeDelTaskIndex,1);
+            localStorage.setItem("todoTasks",JSON.stringify(exTasks));
+
+            location.reload();//localstorage中内容已变，只要刷新就可看到了，缺点是太慢
+        },
+
         render: function(){
 
             return <div className='item'>
                 <input checked={this.state.checked} className='cb' type='checkbox' onClick={this.handleClick}></input>
                 <span style={this.state.styleObj} className='cbTxt'>{this.props.inputText}</span>
+                <span className='deleteBtn' onClick={this.deleteClick}>删除</span>
             </div>;
         }
     });
