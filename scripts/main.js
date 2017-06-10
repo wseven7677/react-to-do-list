@@ -1,10 +1,6 @@
 
 require([],function(){
 
-    var existTasks = [],    // 存放数据对象
-        tasksAll = [];      // 存放带格式的items的数组。
-
-
 // 回车键提交任务：
     document.addEventListener("keypress",function(event){
         if(event.keyCode == 13){
@@ -110,15 +106,17 @@ require([],function(){
         }
     });
 
+    var tasksAll = [];      // 存放带格式的items的数组(全局，方便使用)
+
 // ====总控制+条目输入 【总负责 组件】====
     var TaskInCtrl = React.createClass({
 
         getInitialState: function(){
             // 初始化时加载localstorage中的tasks：
-            var oTasksString;
+            var existTasks = [];    // 存放数据对象
+
             if(localStorage.getItem("todoTasks") != null){
-                oTasksString = localStorage.getItem("todoTasks");
-                existTasks = JSON.parse(oTasksString);
+                existTasks = JSON.parse(localStorage.getItem("todoTasks"));
 
                 existTasks.forEach(function(value,index){
                     tasksAll.push(<TaskItem doneState={value.state} inputText={value.content} />);
@@ -135,6 +133,7 @@ require([],function(){
             var theInput = document.getElementById("theInput"),
                 taskForStorage = {},
                 tasksInStorage = [];
+            
             // 用于展示：
             tasksAll.push(<TaskItem doneState={false} inputText={theInput.value} />);
 
