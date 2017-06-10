@@ -1,9 +1,8 @@
-// console.log("main.js is ok.");
 
-require(["scripts/dataImport"],function(dataImport){
+require([],function(){
 
-    var existTasks = [],
-        tasksAll = [];// 存放带格式的items的数组，全局。
+    var existTasks = [],    // 存放数据对象
+        tasksAll = [];      // 存放带格式的items的数组。
 
 
 // 回车键提交任务：
@@ -15,22 +14,10 @@ require(["scripts/dataImport"],function(dataImport){
     });
 
 // --------------------react start------------------------------------
-// 每一个条目 【组件】
+// ====每一个条目 【组件】====
     var TaskItem = React.createClass({
 
-        saveStateToStorage: function(){
-            var exTasks = JSON.parse(localStorage.getItem("todoTasks")),
-                that = this;
-            exTasks.forEach(function(value,index){
-                if(value.content == that.props.inputText){
-                    value.state = ! value.state;
-                }
-            });
-            localStorage.setItem("todoTasks",JSON.stringify(exTasks));
-        },
-
         getInitialState: function(){
-
             if(this.props.doneState == false){
                return {
                     checked: false,
@@ -48,11 +35,23 @@ require(["scripts/dataImport"],function(dataImport){
                     }
                 };
             }
-
         },
 
-        handleClick: function(){
+        // 存储任务状态（完成与否）：
+        saveStateToStorage: function(){
+            var exTasks = JSON.parse(localStorage.getItem("todoTasks")),
+                that = this;
+            exTasks.forEach(function(value,index){
+                if(value.content == that.props.inputText){
+                    value.state = ! value.state;
+                }
+            });
+            localStorage.setItem("todoTasks",JSON.stringify(exTasks));
+        },
 
+        // 点击checkbox的事件：
+        handleClick: function(){
+            // 立刻修改表面样式：
             if(this.state.checked == false){
                 this.setState({
                     checked: true,
@@ -70,9 +69,11 @@ require(["scripts/dataImport"],function(dataImport){
                     }
                 });
             }
+            // 修改localstorage中的数据：
             this.saveStateToStorage();
         },
 
+        // 点击删除：
         deleteClick: function(){
             var exTasks = JSON.parse(localStorage.getItem("todoTasks")),
                 that = this,
@@ -89,7 +90,6 @@ require(["scripts/dataImport"],function(dataImport){
         },
 
         render: function(){
-
             return <div className='item'>
                 <input checked={this.state.checked} className='cb' type='checkbox' onClick={this.handleClick}></input>
                 <span style={this.state.styleObj} className='cbTxt'>{this.props.inputText}</span>
@@ -97,11 +97,11 @@ require(["scripts/dataImport"],function(dataImport){
             </div>;
         }
     });
-// 所有条目的集群 【组件】
+
+// ====所有条目的集群 【组件】====
     var TaskShow = React.createClass({
 
         render: function(){         
-
             var inputContt = this.props.inputContent;
 
             return <div className='itemOutter'>
@@ -109,12 +109,12 @@ require(["scripts/dataImport"],function(dataImport){
             </div>;
         }
     });
-// 总控制+条目输入 【总负责 组件】
+
+// ====总控制+条目输入 【总负责 组件】====
     var TaskInCtrl = React.createClass({
 
         getInitialState: function(){
-
-        // 初始化时加载localstorage中的tasks：
+            // 初始化时加载localstorage中的tasks：
             var oTasksString;
             if(localStorage.getItem("todoTasks") != null){
                 oTasksString = localStorage.getItem("todoTasks");
@@ -129,15 +129,16 @@ require(["scripts/dataImport"],function(dataImport){
                 taskNum: 0
             };
         },
-    // 点击提交后的处理函数：
+
+        // 点击提交后的处理函数：
         handleClick: function(){
             var theInput = document.getElementById("theInput"),
                 taskForStorage = {},
                 tasksInStorage = [];
-        // 用于展示：
+            // 用于展示：
             tasksAll.push(<TaskItem doneState={false} inputText={theInput.value} />);
 
-        // 用于localstorage存储：
+            // 用于localstorage存储：
             taskForStorage = {
                 content: theInput.value,
                 state: false
@@ -148,14 +149,13 @@ require(["scripts/dataImport"],function(dataImport){
             tasksInStorage.push(taskForStorage);
             localStorage.setItem("todoTasks",JSON.stringify(tasksInStorage));
 
-        // 用于重新渲染：
+            // 用于重新渲染：
             this.setState({
                 taskNum: tasksAll.length
             });
         },
 
         render: function(){
-
             return <div>
                 <input id='theInput' type='text' placeholder='在此处输入任务'></input>
                 <button id='subBtn' onClick={this.handleClick}>提交</button>
@@ -165,7 +165,6 @@ require(["scripts/dataImport"],function(dataImport){
         }
     });
     
-
     ReactDOM.render(
         <TaskInCtrl />,
         document.getElementById("outter")
