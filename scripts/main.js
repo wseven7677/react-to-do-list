@@ -2,8 +2,8 @@
 
 require(["scripts/dataImport"],function(dataImport){
 
-    var existTasks = dataImport("data"),
-        theInputs = [];// 存放items的数组，全局。
+    var existTasks = [],
+        tasksAll = [];// 存放带格式的items的数组，全局。
 
 
 // 回车键提交任务：
@@ -17,6 +17,18 @@ require(["scripts/dataImport"],function(dataImport){
 // --------------------react start------------------------------------
 // 每一个条目 【组件】
     var TaskItem = React.createClass({
+
+        saveStateToStorage: function(){
+            var exTasks = JSON.parse(localStorage.getItem("todoTasks")),
+                that = this;
+            exTasks.forEach(function(value,index){
+                if(value.content == that.props.inputText){
+                    value.state = ! value.state;
+                }
+            });
+            localStorage.setItem("todoTasks",JSON.stringify(exTasks));
+        },
+
         getInitialState: function(){
 
             if(this.props.doneState == false){
@@ -58,6 +70,22 @@ require(["scripts/dataImport"],function(dataImport){
                     }
                 });
             }
+            this.saveStateToStorage();
+        },
+
+        deleteClick: function(){
+            var exTasks = JSON.parse(localStorage.getItem("todoTasks")),
+                that = this,
+                tobeDelTaskIndex;
+            exTasks.forEach(function(value,index){
+                if(value.content == that.props.inputText){
+                    tobeDelTaskIndex = index;
+                }
+            });
+            exTasks.splice(tobeDelTaskIndex,1);
+            localStorage.setItem("todoTasks",JSON.stringify(exTasks));
+
+            location.reload();//localstorage中内容已变，只要刷新就可看到了，缺点是太慢
         },
 
         render: function(){
@@ -65,6 +93,7 @@ require(["scripts/dataImport"],function(dataImport){
             return <div className='item'>
                 <input checked={this.state.checked} className='cb' type='checkbox' onClick={this.handleClick}></input>
                 <span style={this.state.styleObj} className='cbTxt'>{this.props.inputText}</span>
+                <span className='deleteBtn' onClick={this.deleteClick}>删除</span>
             </div>;
         }
     });
@@ -85,21 +114,43 @@ require(["scripts/dataImport"],function(dataImport){
 
         getInitialState: function(){
 
-            existTasks.forEach(function(value,index){
-                theInputs.push(<TaskItem doneState={value.state} inputText={value.content} />);
-            });
+        // 初始化时加载localstorage中的tasks：
+            var oTasksString;
+            if(localStorage.getItem("todoTasks") != null){
+                oTasksString = localStorage.getItem("todoTasks");
+                existTasks = JSON.parse(oTasksString);
+
+                existTasks.forEach(function(value,index){
+                    tasksAll.push(<TaskItem doneState={value.state} inputText={value.content} />);
+                });
+            }
 
             return {
                 taskNum: 0
             };
         },
-        // 点击提交后的处理函数：
+    // 点击提交后的处理函数：
         handleClick: function(){
-            var theInput = document.getElementById("theInput");
-            theInputs.push(<TaskItem doneState={false} inputText={theInput.value} />);
+            var theInput = document.getElementById("theInput"),
+                taskForStorage = {},
+                tasksInStorage = [];
+        // 用于展示：
+            tasksAll.push(<TaskItem doneState={false} inputText={theInput.value} />);
 
+        // 用于localstorage存储：
+            taskForStorage = {
+                content: theInput.value,
+                state: false
+            };
+            if(localStorage.getItem("todoTasks") != null){
+                tasksInStorage = JSON.parse(localStorage.getItem("todoTasks"));
+            }
+            tasksInStorage.push(taskForStorage);
+            localStorage.setItem("todoTasks",JSON.stringify(tasksInStorage));
+
+        // 用于重新渲染：
             this.setState({
-                taskNum: theInputs.length
+                taskNum: tasksAll.length
             });
         },
 
@@ -109,7 +160,7 @@ require(["scripts/dataImport"],function(dataImport){
                 <input id='theInput' type='text' placeholder='在此处输入任务'></input>
                 <button id='subBtn' onClick={this.handleClick}>提交</button>
 
-                <TaskShow inputContent={theInputs} />
+                <TaskShow inputContent={tasksAll} />
             </div>;
         }
     });
